@@ -1,0 +1,24 @@
+1. Active Model is essentially a library that gives your custom class access to all sorts of features that are required or convenient for interacting with
+Active Record. One example is with Callbacks. When interacting with the database, there are some things that may need to be done before or after a save,
+for example. With Active Model, class methods like `before_update` or `after_save` are made available. Instance methods are also made available; things
+like validations, which assure that only clean data is ever put into the database. Also it allows us to know if an instance of our class has changed
+or become "dirty" with methods like `changed`.
+
+2. Active Record is an Object Relational Mapping system. It is almost precisely what we wrote in the last road map section. Setting up objects that, when acted
+upon, talk to the database, abstracts away verbose SQL from the application and makes talking to the background database much more intuitive. Of course,
+everything that is persisted in the database is the Model in the MVC architecture. So Active Record is neither the database nor is it the models that were
+discussed in the question above. It is the translator that links the two in such a manner that databases can be manipulated as if they were Ruby objects.
+
+3. Active Support is just like the Utility class we made in the previous road map section. It provides the functions that enable the philosophy of
+"Convention over Configuration" to actually work. In order to use convention, you need to be able to have the same variable name be plural at some
+times and singular at other times. You need the SQL queries (that you don't have to directly worry about thanks to Active Record) to be able to understand
+Symbols as Strings. I envision Active Support as the virtual bookkeeper that enables all of the convenience on the developer's side to happen.
+
+4. Action Pack provides the view and controller pieces of the MVC architecture. Action Dispatch handles HTTP requests (POST, PUT, etc.). Action Controller
+provides several actions that generally affect the View (which is actually executed by performing the HTTP commands so that the browser knows to update).
+Action pack allows for the mapping of routes, so that the developer can define what actions lead to what changes in the browser.
+
+5. Action Mailer is the gem that allows the developer to send emails directly from his or her application. Mailers behave quite like controllers.
+Instead of generating content that affects HTML like controllers do, Mailers format the content of an email. The "View" here can be written in html
+and/or text so that the email client knows how to interpret it. Rather than sending things over http protocol, Mailer sends its "View" content over
+email protocols.
