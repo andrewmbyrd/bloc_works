@@ -1,2 +1,2 @@
 require './config/application'
-run BlocWorks::Application.new
+run BlocBooks::Application.new

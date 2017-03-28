@@ -1,5 +1,5 @@
 require 'bloc_works'
-require_relative './bloc_books'
+require_relative './bloc_books/app/controllers/books_controller'
 require 'rack/test'
 
 class BlocWorksTest < Test::Unit::TestCase
