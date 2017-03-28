@@ -1,6 +1,6 @@
 require "bloc_works/version"
-require "bloc_works/controller"
-require "bloc_works/dependencies"
+require_relative "bloc_works/controller"
+require_relative "bloc_works/dependencies"
 
 module BlocWorks
   # Your code goes here...
