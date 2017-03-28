@@ -15,4 +15,9 @@ class BlocWorkRackTests < Test::Unit::TestCase
     assert last_response.ok?
   end
 
+  def test_it_has_the_right_body
+    get '/'
+    assert_equal("Hello Blocheads!", last_response.body)
+  end
+
 end
