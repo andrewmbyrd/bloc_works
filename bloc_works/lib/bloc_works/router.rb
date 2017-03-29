@@ -4,7 +4,7 @@ module BlocWorks
        #path info is in the URL. want the middle two things as those will correspond to
        #controller and action
        _, controller, action, _ = env["PATH_INFO"].split("/", 4)
-       binding.pry
+       #binding.pry
        unless controller.empty?
          controller = controller.capitalize
          controller = "#{controller}Controller"

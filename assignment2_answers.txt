@@ -1,0 +1,11 @@
+1. My router is remedial compared to Rails'. With Rails' routing, you can set which
+HTTP verbs you want active for each controller, you can specify which controller
+actions correspond to different HTTP verbs, you can drive what HTTP verb requests
+are processed by mapping different actions to key presses and mouse clicks.
+
+My router is just looking at the env Hash which contains some information about
+what client sent the request and  what information is in the URL. My router only
+works if the URL is of a nice pattern wherein it is given host/controller/action/otherstuff.
+
+So we're missing the ability to control the app by any means other than what is
+passed in to env["PATH_INFO"].
