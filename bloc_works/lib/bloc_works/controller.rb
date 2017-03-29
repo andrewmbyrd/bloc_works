@@ -9,7 +9,7 @@ module BlocWorks
 
      def render(view, locals = {})
        #takes whatever the current controller is and gets the filename we want e.g. app/views/labels/name.html.erb
-       filename = File.join("app", "views", controller_dir, "#{view}.html.erb")
+       filename = File.join("../","bloc_books","app", "views", controller_dir, "#{view}.html.erb")
        #template now stores the contents of the file
        template = File.read(filename)
        #this uses some external gem to convert .erb to html for the browser
