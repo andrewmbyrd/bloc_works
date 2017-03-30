@@ -9,7 +9,7 @@ module BlocWorks
   # Your code goes here...
   class Application
      def call(env)
-       self.controller_and_action(env)
+       controller_and_action(env)
      end
    end
 end
