@@ -1,0 +1,21 @@
+From: /home/byrd/.rvm/gems/ruby-2.3.2/gems/bloc_works-0.1.0/lib/bloc_works/router.rb @ line 21 BlocWorks::Application#controller_and_action:
+
+     3: def controller_and_action(env)
+     4:   #path info is in the URL. want the middle two things as those will correspond to
+     5:   #controller and action
+     6:   #i've updated this line so that a URL like `localhost:3000/books/show/1` will set book_num=1
+     7:   _, controller, action, book_num = env["PATH_INFO"].split("/", 4)
+     8:   #binding.pry
+     9:   unless controller.empty?
+    10:     controller = controller.capitalize
+    11:     controller = "#{controller}Controller"
+    12:
+    13:     #constant get turns a string into something like the Capitalized Class Name, so that we can actually have
+    14:     #the dynamic class name, and not just a string. I'm `send`ing it the action because action is also a String
+    15:
+    16:    #now here if we have a book_num, then we can send that parameter to our show controller action
+    17:    #and by the way it needs to be converted to an int first so that SQL knows what to do with it
+    18:     unless book_num
+    19:       return [200, {'Content-Type' => 'text/html'}, [Object.const_get(controller).new(env).send(action)]]
+    20:     else
+ => 21:       binding.pry

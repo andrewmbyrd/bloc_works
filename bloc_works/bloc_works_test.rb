@@ -27,4 +27,9 @@ class BlocWorkRackTests < Test::Unit::TestCase
     assert_equal("<div>\n  <p>Welcome to BlocBooks!</p>\n  <p>Please start by reading Eloquent Ruby</p>\n</div>\n", last_response.body)
   end
 
+  def test_it_shows_just_one_book
+    get '/books/show/1'
+    assert last_response.ok?
+  end
+
 end

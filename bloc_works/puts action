@@ -1,0 +1,30 @@
+
+[1mFrom:[0m /home/byrd/.rvm/gems/ruby-2.3.2/gems/bloc_works-0.1.0/lib/bloc_works/router.rb @ line 21 BlocWorks::Application#controller_and_action:
+
+     [1;34m3[0m: [32mdef[0m [1;34mcontroller_and_action[0m(env)
+     [1;34m4[0m:   [1;34m#path info is in the URL. want the middle two things as those will correspond to[0m
+     [1;34m5[0m:   [1;34m#controller and action[0m
+     [1;34m6[0m:   [1;34m#i've updated this line so that a URL like `localhost:3000/books/show/1` will set book_num=1[0m
+     [1;34m7[0m:   _, controller, action, book_num = env[[31m[1;31m"[0m[31mPATH_INFO[1;31m"[0m[31m[0m].split([31m[1;31m"[0m[31m/[1;31m"[0m[31m[0m, [1;34m4[0m)
+     [1;34m8[0m:   [1;34m#binding.pry[0m
+     [1;34m9[0m:   [32munless[0m controller.empty?
+    [1;34m10[0m:     controller = controller.capitalize
+    [1;34m11[0m:     controller = [31m[1;31m"[0m[31m#{controller}[0m[31mController[1;31m"[0m[31m[0m
+    [1;34m12[0m: 
+    [1;34m13[0m:     [1;34m#constant get turns a string into something like the Capitalized Class Name, so that we can actually have[0m
+    [1;34m14[0m:     [1;34m#the dynamic class name, and not just a string. I'm `send`ing it the action because action is also a String[0m
+    [1;34m15[0m: 
+    [1;34m16[0m:    [1;34m#now here if we have a book_num, then we can send that parameter to our show controller action[0m
+    [1;34m17[0m:    [1;34m#and by the way it needs to be converted to an int first so that SQL knows what to do with it[0m
+    [1;34m18[0m:     [32munless[0m book_num
+    [1;34m19[0m:       [32mreturn[0m [[1;34m200[0m, {[31m[1;31m'[0m[31mContent-Type[1;31m'[0m[31m[0m => [31m[1;31m'[0m[31mtext/html[1;31m'[0m[31m[0m}, [[1;34;4mObject[0m.const_get(controller).new(env).send(action)]]
+    [1;34m20[0m:     [32melse[0m
+ => [1;34m21[0m:       binding.pry
+    [1;34m22[0m:       [32mreturn[0m [[1;34m200[0m, {[31m[1;31m'[0m[31mContent-Type[1;31m'[0m[31m[0m => [31m[1;31m'[0m[31mtext/html[1;31m'[0m[31m[0m}, [[1;34;4mObject[0m.const_get(controller).new(env).send(action, book_num.to_i)]]
+    [1;34m23[0m:     [32mend[0m
+    [1;34m24[0m: 
+    [1;34m25[0m:   [32melse[0m
+    [1;34m26[0m:     [32mreturn[0m [[1;34m200[0m,{[31m[1;31m'[0m[31mContent-Type[1;31m'[0m[31m[0m => [31m[1;31m'[0m[31mtext/html[1;31m'[0m[31m[0m}, [[31m[1;31m"[0m[31mHello Blocheads![1;31m"[0m[31m[0m] ]
+    [1;34m27[0m:   [32mend[0m
+    [1;34m28[0m: [32mend[0m
+
