@@ -14,7 +14,15 @@ module BlocWorks
        template = File.read(filename)
        #this uses some external gem to convert .erb to html for the browser
        eruby = Erubis::Eruby.new(template)
+
+       #we need to get all of the instance variables from the
+       #controller and assign them to this instance of Erubis
+       instance_variables.each do |var|
+         value = instance_variable_get(var)
+         eruby.instance_variable_set(var, value)
+       end
        eruby.result(locals.merge(env: @env))
+       #binding.pry
      end
 
      #converts CurrentController to "current"

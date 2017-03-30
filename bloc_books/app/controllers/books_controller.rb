@@ -2,8 +2,8 @@
 class BooksController < BlocWorks::Controller
 
   def welcome
-    render(:welcome, book: "Eloquent Ruby")
-    @book = "Super Ruby"
+    @author = "me"
+    render(:welcome, {book: "Eloquent Ruby"})  
   end
 
   def show

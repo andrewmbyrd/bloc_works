@@ -3,7 +3,6 @@ PATH
   specs:
     bloc_works (0.1.0)
       erubis (~> 2.7)
-      pry
 
 GEM
   remote: https://rubygems.org/

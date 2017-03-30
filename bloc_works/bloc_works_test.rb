@@ -23,16 +23,16 @@ class BlocWorkRackTests < Test::Unit::TestCase
     assert_equal("Hello Blocheads!", last_response.body)
   end
 
-  def test_it_invokes_controller_and_action_view
-    get '/books/welcome'
-    assert last_response.ok?
-  end
+#  def test_it_invokes_controller_and_action_view
+#    get '/books/welcome'
+#    assert last_response.ok?
+#  end
 
   def test_it_gets_routed_to_welcome
     get '/books/welcome'
     assert_equal("<div>\n  <p>Welcome to BlocBooks!</p>\n  <p>Please start by reading Super Ruby</p>\n</div>\n", last_response.body)
   end
-
+=begin
   def test_it_can_do_stuff_for_show
     get '/books/show'
     assert_equal("Here is the page", last_response.body)
@@ -72,5 +72,5 @@ class BlocWorkRackTests < Test::Unit::TestCase
     delete '/library/delete'
     assert_equal("the library delete verb works", last_response.body)
   end
-
+=end
 end

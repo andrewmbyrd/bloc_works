@@ -9,7 +9,11 @@ module BlocWorks
   # Your code goes here...
   class Application
      def call(env)
-       self.controller_and_action(env)
+       if env["PATH_INFO"] == "/favicon.ico"
+         fav_icon(env)
+        else
+         controller_and_action(env)
+       end
      end
    end
 end
