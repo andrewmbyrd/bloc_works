@@ -9,7 +9,18 @@ module BlocWorks
   # Your code goes here...
   class Application
      def call(env)
-       controller_and_action(env)
+
+       if env['PATH_INFO'] == '/favicon.ico'
+         return [404, {'Content-Type' => 'text/html'}, []]
+       end
+
+       #controller_and_action(env)
+
+       #so rack app is the thing in `destination` in our
+       #router.rules list
+       rack_app = get_rack_app(env)
+       rack_app.call(env)
+
      end
    end
 end

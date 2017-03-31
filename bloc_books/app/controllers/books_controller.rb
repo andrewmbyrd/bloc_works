@@ -9,5 +9,10 @@ class BooksController < BlocWorks::Controller
     render(:index, books: Book.all)
   end
 
+  def show
+    book = Book.find(params['id'].to_i)
+    render(:show, book: book)
+  end
+
 
 end
