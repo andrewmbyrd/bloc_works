@@ -14,5 +14,15 @@ class BooksController < BlocWorks::Controller
     render(:show, book: book)
   end
 
+  #as examples, the URL books/home will redirect_to the welcome action,
+  #list will redirect to the index action
+  def home
+    redirect_to("welcome")
+  end
+
+  def list
+    redirect_to("index")
+  end
+
 
 end

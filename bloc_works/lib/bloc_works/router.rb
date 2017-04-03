@@ -1,6 +1,6 @@
 module BlocWorks
    class Application
-
+     attr_reader :router
      def get_rack_app(env)
        if @router.nil?
          raise "No routes defined"
@@ -44,80 +44,134 @@ module BlocWorks
 
 
   #a Router is nothing more than an array, whose indices each contain a rule
-  # and each rule is a hash with keys regex:, vars:, destintation:,
+  # and each rule is a hash with keys regex:, vars:, destination:,
   # and options:
    class Router
+     attr_reader :rules
      def initialize
        @rules = []
      end
 
-     #url is a srting.
-     #args SHOULD be an array with up to two items:
-     #the first is a destintation String
-     #the second could be a Hash which contains options
-     def map(url, *args)
-       #if the last element of args is a hash, take it off and set options
-       #to it. Now, if that was there, it should be a hash containing key
-       #'default', which, itself has a key of another hash
-       #if it wasn't there, then sed options{:default} to the empty Hash
-       options = {}
-       options = args.pop if args[-1].is_a?(Hash)
-       options[:default] ||= {}
+     #if it's there at all, options_hash will be a hash in our current
+     #setup of routes, but I'll add that extra check just in case
+     def get_options(options_hash)
+       return {default: {}} unless options_hash && options_hash.is_a?(Hash)
+       options_hash[:default] ||= {}
+       options_hash
+     end
 
-       #set destintation to nil, and then set it to whatever is at
-       #the last inddex of args. Which looks like should be 0 because
-       #after that pop, if there's anything left, then we raise an error
-       destination = nil
-       destination = args.pop if args.size > 0
-       raise "Too many args!" if args.size > 0
+     def assign_destination(destination_string)
+       return nil unless destination_string && destination_string.is_a?(String)
+       destination_string
+     end
 
-      #similar to how we did in controller_and_action get the parts of the
-      #url split up into an array based on the forward slash, then take
-      #out empty parts (so if the url contained "//")
-       parts = url.split("/")
+     def define_regular_expression_for_this_url_pattern(url_pattern)
+
+       parts = url_pattern.split("/")
        parts.reject! { |part| part.empty? }
 
-      #vars and regex_parts are both set to the empty array
-       vars, regex_parts = [], []
+       regex_parts = []
 
-      #so now loop through each part of the array. Each of which is a
-      #String
        parts.each do |part|
-         #so we're looking at the first letter
-         case part[0]
-        #if it's a colon, add every following character to the next
-        #index of vars. Then put in the next index of regex_parts
-        #that the thing to match is any alphanumeric character
-        #SO VARS WILL CONTAIN ALL OF OUR SYMBOLS - PATTERNS like
-        #:controller, :action, :id
+
+        case part[0]
+
          when ":"
-           vars << part[1..-1]
-           regex_parts << "([a-zA-Z0-9]+)"
-        #if it's a star, add every following character to the next
-        #index of vars. And regex_parts gets a /.*/ to match  on
+           if part == ":id"
+             regex_parts << "([0-9]+)"
+           else
+             regex_parts << "([a-zA-Z0-9]+)"
+           end
+
          when "*"
-           vars << part[1..-1]
            regex_parts << "(.*)"
-        #otherwise, regex_parts simple gets the string at this part of the
-        #url (always ignoring "/" from the URL of course)
+
          else
            regex_parts << part
          end
        end
 
-       #ok so now we're combining all of the regex parts into a single
-       #string, which will be our total regex to match on later
+       regex_parts.join("/")
 
-       #vars is an array that contains all of the strings that had : or *
-       #at the beginning
+     end
 
-       #destination is either nil or what was at index 0 of args
-       #options is either a blank hash or what was the hash at inded 1
-       #of args
-       regex = regex_parts.join("/")
-       @rules.push({ regex: Regexp.new("^/#{regex}$"),
-                     vars: vars, destination: destination,
-                     options: options })
+     def assign_vars_for_this_url_pattern(url_pattern)
+
+       parts = url_pattern.split("/")
+       parts.reject! { |part| part.empty? }
+
+       vars = []
+
+       parts.each do |part|
+
+        case part[0]
+
+         when ":"
+           vars << part[1..-1]
+
+         when "*"
+           vars << part[1..-1]
+
+         end
+       end
+
+       vars
+     end
+
+     def build_rule_for_this_route(regex, vars, dest, options)
+       rule = {regex: Regexp.new("^/#{regex}$"),
+               vars: vars,
+               destination: dest,
+               options: options}
+       @rules.push(rule)
+     end
+
+     #build the rules for the url patterns and options given in
+     #config.ru
+     def map(url, *args)
+
+       raise "Too many args!" if args.size > 2
+
+       #get_options needs to be run at least once in order to set our
+       #`default` key in the hash. Options can be at position 0 or 1,
+       #destination will be at position 0 or not there at all
+       options = get_options(args.pop) if args[1]
+       destination = assign_destination(args[0])
+       options = get_options(args[0])
+
+
+       #i realize that splitting the two following variables below  into
+       #two funciton isn't DRY, but I'm just refacotring here to make things
+       #as clear as possible
+       vars_array = assign_vars_for_this_url_pattern(url)
+       regex = define_regular_expression_for_this_url_pattern(url)
+
+       build_rule_for_this_route(regex, vars_array, destination, options)
+
+
+     end
+
+     #we need the symbol :books in config.ru so that we know how to define
+     #the blank url
+     def resources(controller)
+       controller_string = controller.to_s
+       map "", "#{controller_string}#welcome"
+       map ":controller/:id/:action"
+       map ":controller/:action"
+       map ":controller/:id", default: { "action" => "show" }
+       map ":controller", default: { "action" => "index" }
+     end
+
+
+     def set_controller_action (rule, params)
+       if rule[:destination]
+         return get_destination(rule[:destination], params)
+       else
+         controller = params["controller"]
+         action = params["action"]
+         return get_destination("#{controller}##{action}", params)
+       end
+
      end
 
      #ok so now we have a bunch of hashes in @rules. We're gonna pass
@@ -137,26 +191,27 @@ module BlocWorks
            #that means it will have options[default]'s isntance vars
            params = options[:default].dup
 
-           #ok so now for each VAR, we're gonna assign params[var] to
-           #the thing that's actually there. so  at then end, we should
-           #have like params[controller] = books and so on
            rule[:vars].each_with_index do |var, index|
              params[var] = rule_match.captures[index]
            end
 
-           if rule[:destination]
-             return get_destination(rule[:destination], params)
-           else
-             controller = params["controller"]
-             action = params["action"]
-             return get_destination("#{controller}##{action}", params)
+           #correct for the overlap in the pattern of :controller/:id
+           # and :controller/:action
+           if params["action"].to_i > 0
+             params["id"] = params["action"]
+             params["action"] = "show"
            end
+
+           #so we have to RETURN the result of the function here
+           #in order to break out of our loop
+           return set_controller_action(rule, params)
          end
        end
      end
 
      #so if destination is an object with a call method, return it
      def get_destination(destination, routing_params = {})
+       puts destination
        if destination.respond_to?(:call)
          return destination
        end
@@ -172,7 +227,7 @@ module BlocWorks
          return controller.action($2, routing_params)
        end
        #otherwise we messed up by coming here
-       raise "Destination no found: #{destination}"
+       raise "Destination not found: #{destination}"
      end
 
    end

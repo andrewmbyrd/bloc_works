@@ -8,10 +8,7 @@ app = BlocWorks::Application.new
 #here if you want it to exist. So then our config.ru file here acts as the
 #config/routes file in a Rails application
  app.route do
-   map "", "books#welcome"
-   map ":controller/:id/:action"
-   map ":controller/:id", default: { "action" => "show" }
-   map ":controller", default: { "action" => "index" }
+   resources :books   
  end
 
  run(app)

@@ -65,6 +65,10 @@ module BlocWorks
        eruby.result(locals.merge(env: @env))
      end
 
+     def redirect_to(action)
+       self.send(action)
+     end
+
      #converts CurrentController to "current"
      def controller_dir
        klass = self.class.to_s

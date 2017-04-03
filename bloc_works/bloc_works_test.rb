@@ -12,19 +12,24 @@ class BlocWorkRackTests < Test::Unit::TestCase
     BlocBooks::Application.new
   end
 
-  def test_it_puts_bloc_heads
-    get '/'
-    assert last_response.ok?
+
+  def test_map
+    app1 = app
+    app1.route do
+        map("", "books#welcome")
+        map ":controller/:id/:action"
+    end
+    assert_equal(app1.router.rules[0][:destination], "books#welcome")
   end
 
-  def test_it_has_the_right_body
-    get '/'
-    assert_equal("Hello Blocheads!", last_response.body)
-  end
+  def test_look_up_url
+    app1 = app
+    app1.route do
+        map("", "books#welcome")
+        map ":controller/:id/:action"
+    end
 
-  def test_it_gets_routed_to_welcome
-    get '/books/welcome'
-    assert_equal("<div>\n  <p>Welcome to BlocBooks!</p>\n  <p>Please start by reading Eloquent Ruby</p>\n</div>\n", last_response.body)
+    assert_equal(app1.router.look_up_url("/").class, Proc)
   end
 
 end
